@@ -1,7 +1,13 @@
 body{
     font-family: "Plus Jakarta Sans", sans-serif !important;
     font-optical-sizing: auto;
-    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container{
+    flex: 1;
 }
 
 /* Navbar Stylings */
@@ -81,3 +87,8 @@ body{
     background-color: white;
 }
 
+
+.add-btn{
+    background-color: green !important;
+    border: none !important;
+}
