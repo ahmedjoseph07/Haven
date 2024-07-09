@@ -1,3 +1,5 @@
+//Data collected from chatGPT
+
 const sampleListings = [
     {
         title: "Cozy Beachfront Cottage",
