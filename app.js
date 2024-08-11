@@ -65,24 +65,16 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    res.locals.currentUser = req.user;
     next();
 })
-
-// app.get("/demoUser", async(req,res)=>{
-//     let fakeUser = new User({
-//         email:"abc@gmail.com",
-//         username:"abc"
-//     })
-//     let registeredUser = await User.register(fakeUser,"passaword");
-//     res.send(registeredUser);
-// })
 
 // Routes (using express-router)
 app.use("/listings",listingRouter)
 app.use("/listings/:id/reviews",reviewRouter)
 app.use("/",userRouter)
 
-//Non existing routes error prevention
+//Non existing routes error handling
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page not found"));
 })
@@ -94,7 +86,7 @@ app.use((err, req, res, next) => {
 
 })
 
-//Server run
+//Server
 app.listen(8080, () => {
     console.log("server is listening to port 8080");
 })
