@@ -1,4 +1,8 @@
 <% layout("/layouts/boilerplate") -%>
+    <script>
+        mapToken = "<%= process.env.MAP_TOKEN %>"
+        const listing = "<%- JSON.stringify(listing) %>"
+    </script>
 
     <body>
         <div class="row mt-3">
@@ -46,8 +50,8 @@
                                 <div class="mb-3 mt-3">
                                     <label for="rating" class="form-label">Rating</label>
                                     <fieldset class="starability-slot">
-                                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1"
-                                            checked aria-label="No rating." />
+                                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]"
+                                            value="1" checked aria-label="No rating." />
                                         <input type="radio" id="first-rate1" name="review[rating]" value="1" />
                                         <label for="first-rate1" title="Terrible">1 star</label>
                                         <input type="radio" id="first-rate2" name="review[rating]" value="2" />
@@ -71,29 +75,36 @@
                                 <button class="btn btn-outline-dark">Submit</button>
                             </form>
                             <% } %>
-
-                                <div class="row">
-                                    <p><b>All Reviews</b></p>
-                                    <% for(review of listing.reviews) {%>
-                                        <div class="card col-5 ms-3 mb-3">
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <%=review.author.username%>
-                                                </h5>
-                                                <p class="starability-result card-text"
-                                                    data-rating="<%= review.rating%>"></p>
-                                                <p class="card-text">
-                                                    <%=review.comment%>
-                                                </p>
+                                <% if(listing.reviews.length> 0){ %>
+                                    <div class="row">
+                                        <p><b>All Reviews</b></p>
+                                        <% for(review of listing.reviews) {%>
+                                            <div class="card col-5 ms-3 mb-3">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <%=review.author.username%>
+                                                    </h5>
+                                                    <p class="starability-result card-text"
+                                                        data-rating="<%= review.rating%>"></p>
+                                                    <p class="card-text">
+                                                        <%=review.comment%>
+                                                    </p>
+                                                </div>
+                                                <form class="mb-3"
+                                                    action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE"
+                                                    method="POST">
+                                                    <button class="btn btn-sm btn-dark">Delete</button>
+                                                </form>
                                             </div>
-                                            <form class="mb-3"
-                                                action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE"
-                                                method="POST">
-                                                <button class="btn btn-sm btn-dark">Delete</button>
-                                            </form>
-                                        </div>
-                                        <% } %>
-                                </div>
+                                            <% } %>
+                                    </div>
+                                    <% } %>
+                    </div>
+                    <div class="col-6 offset-3 mb-3">
+                        <h3>Where you'll be</h3>
+                        <div id="map"></div>
                     </div>
         </div>
+
+        <script src="/js/map.js"></script>
     </body>
