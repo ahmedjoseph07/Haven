@@ -6,7 +6,10 @@ const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
-const MONGO_URL = "mongodb://127.0.0.1:27017/haven";
+
+// const MONGO_URL = "mongodb://127.0.0.1:27017/haven";
+const dbUrl = process.env.ATLASDB_URL;
+
 const methodOverride = require("method-override");
 const engine = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
@@ -14,6 +17,8 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user")
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
+
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -29,7 +34,7 @@ main().then(() => {
     })
 
 async function main() {
-    await mongoose.connect(MONGO_URL)
+    await mongoose.connect(dbUrl)
 }
 
 //Middlewares 
@@ -40,8 +45,22 @@ app.use(methodOverride("_method"));
 app.engine("ejs", engine);
 app.use(express.static(path.join(__dirname, "public")));
 
+// MongoStore
+const store = MongoStore.create({
+    mongoUrl:dbUrl,
+    crypto:{
+        secret:"secretcode"
+    },
+    touchAfter:24*3600,
+});
+
+store.on("error",(err)=>{
+    console.log("MONGO SESSION ERR", err);
+})
+
 //Express-session pkg & connect-flash pkg used
 const sessionOptions = {
+    store:store,
     secret:"secretcode",
     resave:false,
     saveUninitialized:true,
@@ -51,10 +70,8 @@ const sessionOptions = {
         httpOnly:true,
     }
 }
-// Root route
-app.get("/", (req, res) => {
-    res.send("I am root");
-})
+
+
 
 app.use(session(sessionOptions));
 app.use(flash());

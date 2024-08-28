@@ -21,7 +21,6 @@ module.exports.showListing = async (req, res) => {
         req.flash("error", "Listing does not exist");
         res.redirect("/listings");
     }
-    console.log(listing);
     res.render("listings/show.ejs", { listing });
 } 
 
@@ -43,9 +42,9 @@ module.exports.renderEditListing = async (req, res) => {
         req.flash("error", "Listing does not exist");
         res.redirect("/listings");
     }
-    let originalImageUrl = listing.image.url;
-    originalImageUrl = originalImageUrl.replace("/upload","/upload/h_200,w_250");
-    res.render("listings/edit.ejs", { listing,originalImageUrl });
+    let originalImageUrl = listing.image.url ;
+    originalImageUrl = originalImageUrl.replace("/upload","/upload/w_300");
+    res.render("listings/edit.ejs", { listing, originalImageUrl });
 }
 
 module.exports.updateListing = async (req, res) => {
